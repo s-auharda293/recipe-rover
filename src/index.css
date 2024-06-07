@@ -55,7 +55,7 @@ body {
   padding-left: 1.6rem;
   transition: 0.3s all;
   font-size: 1.6rem;
-
+  border-radius: 15px;
   color: #4a3110;
 }
 .input::placeholder {
@@ -121,8 +121,8 @@ body {
   font-size: 1.6rem;
 }
 .card-left {
-  width: 60px;
-  height: 70px;
+  width: 80px;
+  height: 80px;
 }
 .card-left img {
   width: 100%;
@@ -143,6 +143,9 @@ body {
 //////////////////////////////////////////////////////////////////////////////////
 */
 .box:nth-child(1) {
+  position: relative;
+}
+.box:nth-child(2) {
   position: relative;
 }
 .hide-box-1 {
@@ -200,11 +203,9 @@ body {
   overflow-y: auto;
 }
 .close-button {
-  display: inline-block;
   position: absolute;
   top: -10px;
-  right: -40%;
-  border-radius: 50%;
+  right: -28%;
   width: 20px;
   height: 20px;
 }
@@ -287,4 +288,24 @@ body {
   border-radius: 100%;
   width: 100%;
   height: 100%;
+}
+.hide-stats {
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  right: 15px;
+  top: 15px;
+  z-index: 10;
+}
+.hide-stats:hover {
+  cursor: pointer;
+}
+.hide-stats img {
+  width: 100%;
+  height: 100%;
+}
+
+.loading {
+  text-align: center;
+  margin-top: 50%;
 }
