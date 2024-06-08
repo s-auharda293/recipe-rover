@@ -113,6 +113,7 @@ body {
 }
 .card:hover {
   box-shadow: 0 1px 10px 0 #ccc;
+  cursor: pointer;
 }
 .card h3 {
   font-size: 1.8rem;
@@ -173,6 +174,8 @@ body {
   padding: 1.2rem;
   /* background-color: red; */
   position: relative;
+  background-color: #ec9a2f;
+  color: #4a3110;
 }
 .stats h3 {
   text-transform: uppercase;
@@ -283,6 +286,9 @@ body {
   height: 25px;
   top: 10px;
   left: 10px;
+}
+.back:hover {
+  cursor: pointer;
 }
 .back img {
   border-radius: 100%;

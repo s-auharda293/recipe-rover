@@ -54,6 +54,7 @@ const Main = ({ searchInput, recipeData, setRecipeData }) => {
   const [showStats, setShowStats] = useState(true);
   const [isloading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [selected, setSelected] = useState(null);
   const abortControllerRef = useRef(null);
 
   const handleHideRecipes = () => {
@@ -61,7 +62,6 @@ const Main = ({ searchInput, recipeData, setRecipeData }) => {
   };
 
   const handleHideStats = () => {
-    console.log("clicked");
     setShowStats((showStats) => !showStats);
   };
 
@@ -103,8 +103,14 @@ const Main = ({ searchInput, recipeData, setRecipeData }) => {
         showRecipe={showRecipe}
         recipeData={recipeData}
         handleHideRecipes={handleHideRecipes}
+        setSelected={setSelected}
       />
-      <RightBox handleHideStats={handleHideStats} showStats={showStats} />
+      <RightBox
+        handleHideStats={handleHideStats}
+        showStats={showStats}
+        selected={selected}
+        setSelected={setSelected}
+      />
     </main>
   );
 };
@@ -115,6 +121,7 @@ const LeftBox = ({
   showRecipe,
   recipeData,
   handleHideRecipes,
+  setSelected,
 }) => {
   return (
     <div className="box">
@@ -145,6 +152,8 @@ const LeftBox = ({
                     cuisine={recipe.cuisine}
                     prepTimeMinutes={recipe.prepTimeMinutes}
                     key={recipe.id}
+                    id={recipe.id}
+                    setSelected={setSelected}
                   />
                 ))}
             </>
@@ -155,32 +164,93 @@ const LeftBox = ({
   );
 };
 
-const RightBox = ({ handleHideStats, showStats }) => {
+const RightBox = ({ handleHideStats, showStats, selected, setSelected }) => {
+  const [liked, setLiked] = useState([]);
+
   return (
     <div className="box">
-      <div className="hide-stats" role="button" onClick={handleHideStats}>
-        {showStats ? (
-          <img src={hide} alt="hide-button" />
-        ) : (
-          <img src={open} alt="open-button" />
-        )}
-      </div>
-      {showStats && (
+      {selected === null ? (
         <>
-          <div className="stats">
-            <h3>Recipes you liked</h3>
-            <div className="stats-calculation">
-              <span>#️⃣0 recipes</span>
-              <span>⭐0</span>
-              <span>⌚0 min</span>
+          <div className="hide-stats" role="button" onClick={handleHideStats}>
+            {showStats ? (
+              <img src={hide} alt="hide-button" />
+            ) : (
+              <img src={open} alt="open-button" />
+            )}
+          </div>
+          {showStats && (
+            <>
+              <div className="stats">
+                <h3>Recipes you liked</h3>
+                <div className="stats-calculation">
+                  <span>#️⃣0 recipes</span>
+                  <span>⭐0</span>
+                  <span>🌟0</span>
+                  <span>⌚0 min</span>
+                </div>
+              </div>
+              <div className="make-list">
+                <StatListCard />
+                <StatListCard />
+              </div>
+            </>
+          )}
+        </>
+      ) : (
+        <SelectedFood selected={selected} setSelected={setSelected} />
+      )}
+    </div>
+  );
+};
+
+const SelectedFood = ({ selected, setSelected }) => {
+  const [foodData, setFoodData] = useState();
+
+  const handleGoBack = () => {
+    setSelected(null);
+  };
+
+  useEffect(() => {
+    const fetchSelectedFood = async () => {
+      const response = await fetch(`https://dummyjson.com/recipes/${selected}`);
+      const data = await response.json();
+      setFoodData(data);
+    };
+    fetchSelectedFood();
+  }, [selected]);
+
+  return foodData ? (
+    <>
+      <div className="selected-food">
+        <div className="back">
+          <img src={back} alt="back" onClick={handleGoBack} />
+        </div>
+        <div className="food-description">
+          <img src={foodData.image} alt={foodData.name} />
+          <div className="selected-food-stats">
+            <h2>{foodData.name}</h2>
+            <div className="food-stats-summary">
+              <span>{foodData.cuisine}</span>
+              <span>⭐{foodData.rating}</span>
+              <span>⌚{foodData.prepTimeMinutes}</span>
             </div>
           </div>
-          <div className="make-list">
-            <StatListCard />
-            <StatListCard />
-          </div>
+        </div>
+        <div className="food-stats">
+          <div className="rating">Rating</div>
+          <div className="food-summary">{foodData.instructions.join("")}</div>
+        </div>
+      </div>
+    </>
+  ) : (
+    <>
+      <p className="loading">Loading...</p>
+    </>
+  );
+};
 
-          {/* <div className="selected-food">
+{
+  /* <div className="selected-food">
             <div className="back">
               <img src={back} alt="back" />
             </div>
@@ -207,16 +277,12 @@ const RightBox = ({ handleHideStats, showStats }) => {
                 quaerat fugiat nihil.
               </div>
             </div>
-          </div> */}
-        </>
-      )}
-    </div>
-  );
-};
+          </div> */
+}
 
-const Card = ({ name, image, cuisine, prepTimeMinutes }) => {
+const Card = ({ name, image, cuisine, prepTimeMinutes, id, setSelected }) => {
   return (
-    <div className="card">
+    <div className="card" onClick={() => setSelected(id)}>
       <div className="card-left">
         <img src={image} alt={name} />
       </div>
