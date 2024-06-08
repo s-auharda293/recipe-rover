@@ -97,97 +97,120 @@ const Main = ({ searchInput, recipeData, setRecipeData }) => {
 
   return (
     <main className="main">
-      <div className="box">
-        {error ? (
-          <p className="loading">{error}</p>
-        ) : (
-          <>
-            {isloading ? (
-              <p className="loading">Loading...</p>
-            ) : (
-              <>
-                <div
-                  className="hide-box-1"
-                  role="button"
-                  onClick={() => handleHideRecipes()}
-                >
-                  {showRecipe ? (
-                    <img src={hide} alt="close" />
-                  ) : (
-                    <img src={open} alt="open" />
-                  )}
-                </div>
-                {showRecipe &&
-                  recipeData.map((recipe) => (
-                    <Card
-                      name={recipe.name}
-                      image={recipe.image}
-                      cuisine={recipe.cuisine}
-                      prepTimeMinutes={recipe.prepTimeMinutes}
-                      key={recipe.id}
-                    />
-                  ))}
-              </>
-            )}
-          </>
-        )}
-      </div>
-
-      <div className="box">
-        <div className="hide-stats" role="button" onClick={handleHideStats}>
-          {showStats ? (
-            <img src={hide} alt="hide-button" />
-          ) : (
-            <img src={open} alt="open-button" />
-          )}
-        </div>
-        {showStats && (
-          <>
-            <div className="stats">
-              <h3>Recipes you liked</h3>
-              <div className="stats-calculation">
-                <span>#️⃣0 recipes</span>
-                <span>⭐0</span>
-                <span>⌚0 min</span>
-              </div>
-            </div>
-            <div className="make-list">
-              <StatListCard />
-              <StatListCard />
-            </div>
-
-            {/* <div className="selected-food">
-          <div className="back">
-            <img src={back} alt="back" />
-          </div>
-          <div className="food-description">
-            <img
-              src="https://img.freepik.com/free-photo/vertical-shot-traditional-indian-paneer-butter-masala-cheese-cottage-curry-black-surface_181624-32001.jpg?w=360&t=st=1717681390~exp=1717681990~hmac=6da01804a19a7619810b75a5be4b8cdbfef33a85f03808d0870baa0fcec54d31"
-              alt="image"
-            />
-            <div className="selected-food-stats">
-              <h2>Paneer Masala</h2>
-              <div className="food-stats-summary">
-                <span>Indian</span>
-                <span>⭐0</span>
-                <span>⌚30 mins</span>
-              </div>
-            </div>
-          </div>
-          <div className="food-stats">
-            <div className="rating">Rating</div>
-            <div className="food-summary">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Soluta
-              sed ad deserunt non! Officia amet voluptatum id eaque ut quia.
-              Dignissimos nesciunt maxime, cumque ullam expedita dolores quaerat
-              fugiat nihil.
-            </div>
-          </div>
-        </div> */}
-          </>
-        )}
-      </div>
+      <LeftBox
+        error={error}
+        isloading={isloading}
+        showRecipe={showRecipe}
+        recipeData={recipeData}
+        handleHideRecipes={handleHideRecipes}
+      />
+      <RightBox handleHideStats={handleHideStats} showStats={showStats} />
     </main>
+  );
+};
+
+const LeftBox = ({
+  error,
+  isloading,
+  showRecipe,
+  recipeData,
+  handleHideRecipes,
+}) => {
+  return (
+    <div className="box">
+      {error ? (
+        <p className="loading">{error}</p>
+      ) : (
+        <>
+          {isloading ? (
+            <p className="loading">Loading...</p>
+          ) : (
+            <>
+              <div
+                className="hide-box-1"
+                role="button"
+                onClick={() => handleHideRecipes()}
+              >
+                {showRecipe ? (
+                  <img src={hide} alt="close" />
+                ) : (
+                  <img src={open} alt="open" />
+                )}
+              </div>
+              {showRecipe &&
+                recipeData.map((recipe) => (
+                  <Card
+                    name={recipe.name}
+                    image={recipe.image}
+                    cuisine={recipe.cuisine}
+                    prepTimeMinutes={recipe.prepTimeMinutes}
+                    key={recipe.id}
+                  />
+                ))}
+            </>
+          )}
+        </>
+      )}
+    </div>
+  );
+};
+
+const RightBox = ({ handleHideStats, showStats }) => {
+  return (
+    <div className="box">
+      <div className="hide-stats" role="button" onClick={handleHideStats}>
+        {showStats ? (
+          <img src={hide} alt="hide-button" />
+        ) : (
+          <img src={open} alt="open-button" />
+        )}
+      </div>
+      {showStats && (
+        <>
+          <div className="stats">
+            <h3>Recipes you liked</h3>
+            <div className="stats-calculation">
+              <span>#️⃣0 recipes</span>
+              <span>⭐0</span>
+              <span>⌚0 min</span>
+            </div>
+          </div>
+          <div className="make-list">
+            <StatListCard />
+            <StatListCard />
+          </div>
+
+          {/* <div className="selected-food">
+            <div className="back">
+              <img src={back} alt="back" />
+            </div>
+            <div className="food-description">
+              <img
+                src="https://img.freepik.com/free-photo/vertical-shot-traditional-indian-paneer-butter-masala-cheese-cottage-curry-black-surface_181624-32001.jpg?w=360&t=st=1717681390~exp=1717681990~hmac=6da01804a19a7619810b75a5be4b8cdbfef33a85f03808d0870baa0fcec54d31"
+                alt="image"
+              />
+              <div className="selected-food-stats">
+                <h2>Paneer Masala</h2>
+                <div className="food-stats-summary">
+                  <span>Indian</span>
+                  <span>⭐0</span>
+                  <span>⌚30 mins</span>
+                </div>
+              </div>
+            </div>
+            <div className="food-stats">
+              <div className="rating">Rating</div>
+              <div className="food-summary">
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Soluta
+                sed ad deserunt non! Officia amet voluptatum id eaque ut quia.
+                Dignissimos nesciunt maxime, cumque ullam expedita dolores
+                quaerat fugiat nihil.
+              </div>
+            </div>
+          </div> */}
+        </>
+      )}
+    </div>
   );
 };
 
