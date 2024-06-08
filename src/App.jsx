@@ -198,10 +198,27 @@ const RightBox = ({ handleHideStats, showStats, selected, setSelected }) => {
               <div className="stats">
                 <h3>Recipes you liked</h3>
                 <div className="stats-calculation">
-                  <span>#️⃣0 recipes</span>
-                  <span>⭐0</span>
+                  <span>#️⃣{liked.length} recipes</span>
+                  <span>
+                    ⭐
+                    {liked.length > 0
+                      ? (
+                          liked
+                            .map((likedRecipe) => likedRecipe.rating)
+                            .reduce((acc, cur) => acc + cur) / liked.length
+                        ).toFixed(2)
+                      : "0"}
+                  </span>
                   <span>🌟0</span>
-                  <span>⌚0 min</span>
+                  <span>
+                    ⌚
+                    {liked.length > 0
+                      ? liked
+                          .map((likedRecipe) => likedRecipe.prepTimeMinutes)
+                          .reduce((acc, curr) => acc + curr)
+                      : 0}{" "}
+                    mins
+                  </span>
                 </div>
               </div>
               <div className="make-list">
@@ -210,6 +227,7 @@ const RightBox = ({ handleHideStats, showStats, selected, setSelected }) => {
                     likedFood={likedFood}
                     key={likedFood.id}
                     onClickRemove={handleClickRemove}
+                    setSelected={setSelected}
                   />
                 ))}
               </div>
@@ -341,9 +359,9 @@ const Card = ({ name, image, cuisine, prepTimeMinutes, id, setSelected }) => {
   );
 };
 
-const StatListCard = ({ likedFood, onClickRemove }) => {
+const StatListCard = ({ likedFood, onClickRemove, setSelected }) => {
   return (
-    <div className="card">
+    <div className="card" onClick={() => setSelected(likedFood.id)}>
       <div className="card-left">
         <img src={likedFood.image} alt="food" />
       </div>
