@@ -6,6 +6,7 @@ import back from "./assets/back.png";
 import open from "./assets/open.png";
 import hide from "./assets/hide.png";
 import { useEffect, useState, useRef } from "react";
+import StarRating from "./StarRating";
 
 const App = () => {
   const [recipeData, setRecipeData] = useState([]);
@@ -166,6 +167,20 @@ const LeftBox = ({
 
 const RightBox = ({ handleHideStats, showStats, selected, setSelected }) => {
   const [liked, setLiked] = useState([]);
+  const [rating, setRating] = useState(0);
+
+  const handleGoBack = () => {
+    setSelected(null);
+  };
+
+  const handleAddLiked = (newFood) => {
+    setLiked((liked) => [...liked, newFood]);
+    handleGoBack();
+  };
+
+  const handleClickRemove = (id) => {
+    setLiked((liked) => liked.filter((likedRecipe) => likedRecipe.id != id));
+  };
 
   return (
     <div className="box">
@@ -190,25 +205,40 @@ const RightBox = ({ handleHideStats, showStats, selected, setSelected }) => {
                 </div>
               </div>
               <div className="make-list">
-                <StatListCard />
-                <StatListCard />
+                {liked.map((likedFood) => (
+                  <StatListCard
+                    likedFood={likedFood}
+                    key={likedFood.id}
+                    onClickRemove={handleClickRemove}
+                  />
+                ))}
               </div>
             </>
           )}
         </>
       ) : (
-        <SelectedFood selected={selected} setSelected={setSelected} />
+        <SelectedFood
+          selected={selected}
+          setSelected={setSelected}
+          rating={rating}
+          setRating={setRating}
+          onAddLiked={handleAddLiked}
+          handleGoBack={handleGoBack}
+        />
       )}
     </div>
   );
 };
 
-const SelectedFood = ({ selected, setSelected }) => {
+const SelectedFood = ({
+  selected,
+  setSelected,
+  rating,
+  setRating,
+  onAddLiked,
+  handleGoBack,
+}) => {
   const [foodData, setFoodData] = useState();
-
-  const handleGoBack = () => {
-    setSelected(null);
-  };
 
   useEffect(() => {
     const fetchSelectedFood = async () => {
@@ -237,7 +267,21 @@ const SelectedFood = ({ selected, setSelected }) => {
           </div>
         </div>
         <div className="food-stats">
-          <div className="rating">Rating</div>
+          <div className="rating">
+            <StarRating
+              maxRating={5}
+              size={40}
+              rating={rating}
+              setRating={setRating}
+            />
+            {rating > 0 ? (
+              <p className="add-to-list" onClick={() => onAddLiked(foodData)}>
+                Add to List
+              </p>
+            ) : (
+              ""
+            )}
+          </div>
           <div className="food-summary">{foodData.instructions.join("")}</div>
         </div>
       </div>
@@ -297,23 +341,25 @@ const Card = ({ name, image, cuisine, prepTimeMinutes, id, setSelected }) => {
   );
 };
 
-const StatListCard = () => {
+const StatListCard = ({ likedFood, onClickRemove }) => {
   return (
     <div className="card">
       <div className="card-left">
-        <img
-          src="https://img.freepik.com/free-photo/vertical-shot-traditional-indian-paneer-butter-masala-cheese-cottage-curry-black-surface_181624-32001.jpg?w=360&t=st=1717681390~exp=1717681990~hmac=6da01804a19a7619810b75a5be4b8cdbfef33a85f03808d0870baa0fcec54d31"
-          alt="food"
-        />
+        <img src={likedFood.image} alt="food" />
       </div>
       <div className="card-right">
-        <h3>Paneer masala</h3>
+        <h3>{likedFood.name}</h3>
         <div className="card-description">
-          <span>Indian</span>
-          <span>⭐0</span>
-          <span>⌚30 mins</span>
+          <span>{likedFood.cuisine}</span>
+          <span>⭐{likedFood.rating}</span>
+          <span>🌟{likedFood.rating}</span>
+          <span>⌚{likedFood.prepTimeMinutes} mins</span>
           <span role="button" className="close-button">
-            <img src={close} alt="close-button" />
+            <img
+              src={close}
+              alt="close-button"
+              onClick={() => onClickRemove(likedFood.id)}
+            />
           </span>
         </div>
       </div>
