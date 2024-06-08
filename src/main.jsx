@@ -6,6 +6,6 @@ import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <StarRating />
+    <StarRating maxRating={5} size={48} />
   </React.StrictMode>
 );
